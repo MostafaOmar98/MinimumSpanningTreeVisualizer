@@ -77,8 +77,6 @@ public class GUI extends JPanel
         JComboBox nVertices = new JComboBox<>(numbers);
         JLabel nEdgesLabel = new JLabel("Select number of edges");
         JComboBox nEdges = new JComboBox<>(numbers);
-        JLabel directedLabel = new JLabel("Is directed?");
-        JCheckBox directed = new JCheckBox();
         JButton generate = new JButton("Generate!");
         generate.addActionListener(new ActionListener()
         {
@@ -111,7 +109,7 @@ public class GUI extends JPanel
                     }
                 }
                 if (error == 0)
-                    generateGraph(nV, edgesArr, 0, directed.isSelected());
+                    generateGraph(nV, edgesArr, 0, false);
                 else if (error == 1)
                     JOptionPane.showMessageDialog(null, "Node Numbers must be between [0, n - 1] inclusive");
                 else if (error == 2)
@@ -138,8 +136,6 @@ public class GUI extends JPanel
         form.add(nVertices);
         form.add(nEdgesLabel);
         form.add(nEdges);
-        form.add(directedLabel);
-        form.add(directed);
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         panel.add(form);
@@ -181,14 +177,14 @@ public class GUI extends JPanel
         GraphDrawer originalDrawer = new GraphDrawer(nVertices, edges, "Original Graph", isDirected, false);
         originalDrawer.draw();
 
-        HamiltonCircuitSolver solver = new HamiltonCircuitSolver(nVertices, edges, start, isDirected);
+        MinimumSpanningTreeSolver solver = new MinimumSpanningTreeSolver(nVertices, edges);
         ArrayList<Edge> answer = solver.getAnswer();
         if (answer == null)
         {
-            JOptionPane.showMessageDialog(null, "There does not exist a hamilton circuit for this graph starting from node " + start);
+            JOptionPane.showMessageDialog(null, "There does not exist a spanning tree for this graph");
             return;
         }
-        GraphDrawer hamiltonDrawer = new GraphDrawer(nVertices, answer, "Minimum Hamilton Circuit", isDirected, true);
+        GraphDrawer hamiltonDrawer = new GraphDrawer(nVertices, answer, "Minimum Spanning Tree", isDirected, true);
         hamiltonDrawer.draw();
     }
 
