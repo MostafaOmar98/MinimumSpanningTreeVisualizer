@@ -13,6 +13,8 @@ import org.apache.commons.collections15.Transformer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.geom.Ellipse2D;
 import java.util.ArrayList;
 
@@ -21,27 +23,41 @@ public class GraphDrawer
     AbstractGraph mst;
     String windowName;
     boolean right;
-
+    private String extra;
+    private int last = -1;
     public GraphDrawer(int nodes, ArrayList<Edge> edgeList, String windowName, boolean isDirected, boolean right)
     {
         mst = new SparseMultigraph<Integer, String>();
         for (int i = 0; i < nodes; ++i)
             mst.addVertex(i);
 
-        String extra = new String();
+        extra = new String();
         for (Edge e : edgeList)
         {
-            extra += " ";
-            String eCost = Integer.toString(e.getCost());
-            Integer u = e.getU(), v = e.getV();
-            eCost += extra;
-            if (isDirected)
-                mst.addEdge(eCost, u, v, EdgeType.DIRECTED);
-            else
-                mst.addEdge(eCost, u, v);
+            addEdge(e, isDirected);
+//            extra += " ";
+//            String eCost = Integer.toString(e.getCost());
+//            Integer u = e.getU(), v = e.getV();
+//            eCost += extra;
+//            if (isDirected)
+//                mst.addEdge(eCost, u, v, EdgeType.DIRECTED);
+//            else
+//                mst.addEdge(eCost, u, v);
         }
         this.windowName = windowName;
         this.right = right;
+    }
+
+    void addEdge(Edge e, boolean isDirected)
+    {
+        String eCost = Integer.toString(e.getCost());
+        Integer u = e.getU(), v = e.getV();
+        eCost += extra;
+        if (isDirected)
+            mst.addEdge(eCost, u, v, EdgeType.DIRECTED);
+        else
+            mst.addEdge(eCost, u, v);
+        extra += " ";
     }
 
     public void draw()
@@ -91,6 +107,23 @@ public class GraphDrawer
         frame.pack();
         if (right)
             frame.setLocation((int) rect.getMaxX() - (int) rect.getMaxX() / 2, 0);
+
+        JButton addEdge = new JButton("Add Edge");
+        JPanel panel = new JPanel();
+        addEdge.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                addEdge(new Edge(0, 1, 12), false);
+                frame.setSize(((int)rect.getMaxX() - (int) rect.getMinX()) / 2 + last, ((int)rect.getMaxY() - (int)rect.getMinY())/2);
+                last *= -1;
+            }
+        });
+
+        panel.add(addEdge);
+        frame.add(panel);
+
         frame.setVisible(true);
     }
 }

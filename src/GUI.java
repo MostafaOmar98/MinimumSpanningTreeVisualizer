@@ -33,6 +33,8 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.File;
 
+import static java.lang.Thread.sleep;
+
 
 public class GUI extends JPanel
 {
@@ -56,7 +58,6 @@ public class GUI extends JPanel
         //The following line enables to use scrolling tabs.
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
     }
-
     private JPanel createSetupPanel()
     {
         JPanel panel = new JPanel(false);
@@ -176,7 +177,7 @@ public class GUI extends JPanel
 
         GraphDrawer originalDrawer = new GraphDrawer(nVertices, edges, "Original Graph", isDirected, false);
         originalDrawer.draw();
-
+        originalDrawer.addEdge(new Edge(1, 2, 7), false);
         MinimumSpanningTreeSolver solver = new MinimumSpanningTreeSolver(nVertices, edges);
         ArrayList<Edge> answer = solver.getAnswer();
         if (answer == null)
@@ -184,8 +185,8 @@ public class GUI extends JPanel
             JOptionPane.showMessageDialog(null, "There does not exist a spanning tree for this graph");
             return;
         }
-        GraphDrawer hamiltonDrawer = new GraphDrawer(nVertices, answer, "Minimum Spanning Tree", isDirected, true);
-        hamiltonDrawer.draw();
+        GraphDrawer mstDrawer = new GraphDrawer(nVertices, answer, "Minimum Spanning Tree", isDirected, true);
+        mstDrawer.draw();
     }
 
     /**
